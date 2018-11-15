@@ -20,12 +20,11 @@ RADIUS = int(SquareSize/2 - 5)
 WIDTH = 800
 HEIGHT = 800
 turn = 0
-#Global variables define what something means
 
 pygame.mixer.pre_init()
 pygame.mixer.init()
 pygame.mixer.music.load('bensound-funkyelement.mp3')
-#pygame.mixer.volume_set(3)
+# pygame.mixer.volume_set(3)
 pygame.mixer.music.play(-1)
 
 def createboard():
@@ -37,7 +36,6 @@ def dropPiece(board, row, col, piece):
 
 def validLocation(board, col):
     return board[ROW_COUNT-1][col] == 0
-
 
 def getNextOpenRow(board, col):
     for r in range(ROW_COUNT):
@@ -109,7 +107,7 @@ while not game_over:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             pygame.draw.rect(screen, BLACK, (0, 0, width, SquareSize))
-            posx = event.pos[0]
+            posx = event.posx[0]
             if turn == 0:
                 pygame.draw.circle(screen, RED, (posx, int(SquareSize/2)), RADIUS)
             else:
@@ -118,8 +116,8 @@ while not game_over:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             pygame.draw.rect(screen, BLACK, (0, 0, width, SquareSize))
-            posx = event.position[0]
-            print(event.pos)
+            posx = event.posx[0]
+            # print(event.pos)
             if turn == 0:
                 col = int(math.floor(posx/SquareSize))
 
@@ -133,7 +131,7 @@ while not game_over:
                         game_over = True
 
             else:
-                posx = event.position[0]
+                posx = event.posx[0]
                 col = int(math.floor(posx/SquareSize))
 
                 if validLocation(board, col):
@@ -149,7 +147,18 @@ while not game_over:
                 pygame.mixer.music.load('bensound-clapandyell.mp3')
                 pygame.mixer.volume_set(0.5)
                 pygame.mixer.music.play(-1)
-                pygame.image.load('confetti.png')
+                confetti = pygame.image.load('confetti.png').convert()
+                Confetti = pygame.image.get_rect()
+
+
+                class ConfettiDrop(object):
+                    def move(self, x, y):
+                        self.confetti.center[0] += x
+                        self.confetti.center[1] += y
+
+
+                screen.blit(confetti, (0, 0))
+                pygame.display.update()
                 # load up confetti sprite and make it fall down the screen
 
             printBoard(board)
