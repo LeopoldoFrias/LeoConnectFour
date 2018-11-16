@@ -24,15 +24,15 @@ turn = 0
 pygame.mixer.pre_init()
 pygame.mixer.init()
 pygame.mixer.music.load('bensound-funkyelement.mp3')
-# pygame.mixer.volume_set(3)
 pygame.mixer.music.play(-1)
 
 def createboard():
-    board = numpy.zeros((ROW_COUNT, COLUMN_COUNT)) # (ROW_COUNT, ROW_COUNT)
+    board = numpy.zeros((ROW_COUNT, COLUMN_COUNT))
     return board
 
 def dropPiece(board, row, col, piece):
     board[row][col] = piece
+
 
 def validLocation(board, col):
     return board[ROW_COUNT-1][col] == 0
@@ -70,6 +70,7 @@ def winningMove(board, piece):
         for r in range(3, ROW_COUNT):
             if board[r][c] == piece and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == piece:
                 return True
+    pygame.display.update()
 
 def drawBoard(board):
     for c in range(COLUMN_COUNT):
@@ -84,7 +85,6 @@ def drawBoard(board):
             elif board[r][c] == 2:
                 pygame.draw.circle(screen, YELLOW, (int(c * SquareSize + SquareSize / 2), height - int(r * SquareSize + SquareSize / 2)), RADIUS)
     pygame.display.update()
-
 
 
 board = createboard()
@@ -107,16 +107,7 @@ while not game_over:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             pygame.draw.rect(screen, BLACK, (0, 0, width, SquareSize))
-            posx = event.posx[0]
-            if turn == 0:
-                pygame.draw.circle(screen, RED, (posx, int(SquareSize/2)), RADIUS)
-            else:
-                pygame.draw.circle(screen, YELLOW, (posx, int(SquareSize/2)), RADIUS)
-        pygame.display.update()
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            pygame.draw.rect(screen, BLACK, (0, 0, width, SquareSize))
-            posx = event.posx[0]
+            posx = event.pos[0]
             # print(event.pos)
             if turn == 0:
                 col = int(math.floor(posx/SquareSize))
@@ -131,7 +122,7 @@ while not game_over:
                         game_over = True
 
             else:
-                posx = event.posx[0]
+                posx = event.pos[0]
                 col = int(math.floor(posx/SquareSize))
 
                 if validLocation(board, col):
@@ -143,22 +134,22 @@ while not game_over:
                         screen.blit(label, (40, 10))
                         game_over = True
 
-            if game_over == True:
-                pygame.mixer.music.load('bensound-clapandyell.mp3')
-                pygame.mixer.volume_set(0.5)
-                pygame.mixer.music.play(-1)
-                confetti = pygame.image.load('confetti.png').convert()
-                Confetti = pygame.image.get_rect()
-
-
-                class ConfettiDrop(object):
-                    def move(self, x, y):
-                        self.confetti.center[0] += x
-                        self.confetti.center[1] += y
-
-
-                screen.blit(confetti, (0, 0))
-                pygame.display.update()
+            # if game_over == True:
+            #     pygame.mixer.music.load('bensound-clapandyell.mp3')
+            #     pygame.mixer.volume_set(0.5)
+            #     pygame.mixer.music.play(-1)
+            #     confetti = pygame.image.load('confetti.png').convert()
+            #     Confetti = pygame.image.get_rect()
+            #
+            #
+            #     class ConfettiDrop(object):
+            #         def move(self, x, y):
+            #             self.confetti.center[0] += x
+            #             self.confetti.center[1] += y
+            #
+            #
+            #     screen.blit(confetti, (0, 0))
+            #     pygame.display.update()
                 # load up confetti sprite and make it fall down the screen
 
             printBoard(board)
@@ -168,4 +159,4 @@ while not game_over:
             turn = turn % 2
 
             if game_over:
-                pygame.time.wait(10000)
+                pygame.time.wait(5000)
